@@ -1,33 +1,37 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Flight Management API Documentation'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Welcome to the Flight Management API
 
-## Welcome
-
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+This API provides endpoints to retrieve and create flight information, manage airway bills, and generate operational reports for a cargo airline.
 
 <Card
-  title="Plant Store Endpoints"
-  icon="leaf"
+  title="Flight Management API Specification"
+  icon="plane"
   href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
 >
   View the OpenAPI specification file
 </Card>
 
-## Authentication
+## Base URLs
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The API can be accessed at:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+- Development: `http://localhost:3000`
+- Production: `https://mock-server-hazel-tau.vercel.app/`
+
+## API Sections
+
+<CardGroup>
+  <Card title="Flights" icon="plane-departure" href="/api-reference/endpoint/flights">
+    Operations for managing flight data
+  </Card>
+  <Card title="Airway Bills" icon="file-invoice" href="/api-reference/endpoint/airway-bills">
+    Operations for managing airway bills
+  </Card>
+  <Card title="Reports" icon="chart-line" href="/api-reference/endpoint/reports">
+    Generate operational reports
+  </Card>
+</CardGroup>
