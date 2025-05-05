@@ -1,4 +1,68 @@
 ---
-title: 'Create Plant'
-openapi: 'POST /plants'
+title: 'Create Flight'
+openapi: 'POST /api/flights'
 ---
+
+Create a new flight record.
+
+## Request Body
+
+<ParamField body="flight" type="string" required>
+  Unique flight ID (e.g., PK202)
+</ParamField>
+
+<ParamField body="date" type="string" format="date" required>
+  Flight date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="origin" type="string" required>
+  Departure airport code (e.g., KHI)
+</ParamField>
+
+<ParamField body="departureTime" type="string" required>
+  Departure time (HH:MM)
+</ParamField>
+
+<ParamField body="destination" type="string" required>
+  Arrival airport code (e.g., DXB)
+</ParamField>
+
+<ParamField body="arrivalTime" type="string" required>
+  Arrival time (HH:MM)
+</ParamField>
+
+<ParamField body="weight" type="number" required>
+  Total cargo weight in kg
+</ParamField>
+
+<ParamField body="volume" type="number" required>
+  Cargo volume in m³
+</ParamField>
+
+<ParamField body="status" type="string" required>
+  Flight status (Scheduled, Boarding, In Transit, Arrived, Delayed, Cancelled)
+</ParamField>
+
+<ParamField body="baseRate" type="number" required>
+  Standard cargo rate
+</ParamField>
+
+<ParamField body="aircraftType" type="string" required>
+  Aircraft model (e.g., Boeing 777-300ER)
+</ParamField>
+
+<ParamField body="tailNumber" type="string">
+  Aircraft registration ID (e.g., AP-BHV)
+</ParamField>
+
+<ParamField body="manufacturer" type="string">
+  Aircraft manufacturer (e.g., Boeing)
+</ParamField>
+
+<ParamField body="maxWeight" type="number">
+  Maximum cargo weight capacity
+</ParamField>
+
+<ParamField body="maxVolume" type="number">
+  Maximum cargo volume capacity
+</ParamField>
