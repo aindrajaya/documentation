@@ -1,54 +1,120 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "Flight Management API",
+    "description": "API for managing flight data, airway bills, and generating reports for a cargo airline.\nThis API provides endpoints to retrieve and create flight information, manage airway bills,\nand generate operational reports.\n",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@example.com"
+    }
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://mock-server-hazel-tau.vercel.app/",
+      "description": "Production server"
     }
   ],
-  "security": [
+  "tags": [
     {
-      "bearerAuth": []
+      "name": "Flights",
+      "description": "Operations related to flight data"
+    },
+    {
+      "name": "Airway Bills",
+      "description": "Operations related to airway bills"
+    },
+    {
+      "name": "Reports",
+      "description": "Operations related to operational reports"
     }
   ],
   "paths": {
-    "/plants": {
+    "/api/flights": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "summary": "Get flights",
+        "description": "Retrieve a list of flights with optional filtering and pagination",
+        "operationId": "getFlights",
+        "tags": [
+          "Flights"
+        ],
         "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
           {
             "name": "limit",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "Number of items per page",
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "description": "Filter by origin airport code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "description": "Filter by destination airport code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by flight status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Scheduled",
+                "Boarding",
+                "In Transit",
+                "Arrived",
+                "Delayed",
+                "Cancelled"
+              ]
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Filter by flight date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
+                  "$ref": "#/components/schemas/FlightResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "500": {
+            "description": "Server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -60,31 +126,54 @@
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "summary": "Create a flight",
+        "description": "Create a new flight record",
+        "operationId": "createFlight",
+        "tags": [
+          "Flights"
+        ],
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/FlightCreate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": {
-            "description": "plant response",
+          "201": {
+            "description": "Flight created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Flight created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Flight"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -96,28 +185,133 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/api/airway-bills": {
+      "get": {
+        "summary": "Get airway bills",
+        "description": "Retrieve a list of airway bills with optional filtering and pagination",
+        "operationId": "getAirwayBills",
+        "tags": [
+          "Airway Bills"
+        ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "awbNumber",
+            "in": "query",
+            "description": "Filter by airway bill number",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "shipper",
+            "in": "query",
+            "description": "Filter by shipper name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commodityCode",
+            "in": "query",
+            "description": "Filter by commodity code",
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirwayBillResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an airway bill",
+        "description": "Create a new airway bill record",
+        "operationId": "createAirwayBill",
+        "tags": [
+          "Airway Bills"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AirwayBillCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Airway bill created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Airway bill created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AirwayBill"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -128,25 +322,74 @@
           }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
+    },
+    "/api/reports": {
+      "get": {
+        "summary": "Get operational reports",
+        "description": "Generate operational reports based on date range and currency",
+        "operationId": "getReports",
+        "tags": [
+          "Reports"
+        ],
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date for report period (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "default": "2023-01-01"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date for report period (YYYY-MM-DD)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "default": "2023-12-31"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "description": "Currency for financial figures",
+            "schema": {
+              "type": "string",
+              "default": "USD",
+              "enum": [
+                "USD",
+                "EUR",
+                "GBP",
+                "PKR",
+                "AED",
+                "SAR"
+              ]
             }
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -154,63 +397,708 @@
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "Pagination": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+          "total": {
+            "type": "integer",
+            "description": "Total number of items",
+            "example": 50
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "page": {
+            "type": "integer",
+            "description": "Current page number",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of items per page",
+            "example": 10
+          },
+          "pages": {
+            "type": "integer",
+            "description": "Total number of pages",
+            "example": 5
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
       "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
         "type": "object",
         "properties": {
           "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message",
+            "example": "Failed to fetch flights data"
           }
         }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      },
+      "Flight": {
+        "type": "object",
+        "required": [
+          "id",
+          "flight",
+          "date",
+          "origin",
+          "departureTime",
+          "destination",
+          "arrivalTime",
+          "weight",
+          "volume",
+          "status",
+          "baseRate",
+          "aircraftType"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the flight",
+            "example": 1
+          },
+          "flight": {
+            "type": "string",
+            "description": "Unique flight ID",
+            "example": "PK202"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Flight date",
+            "example": "2023-05-15"
+          },
+          "origin": {
+            "type": "string",
+            "description": "Departure airport code",
+            "example": "KHI"
+          },
+          "departureTime": {
+            "type": "string",
+            "description": "Departure time (HH:MM)",
+            "example": "10:30"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Arrival airport code",
+            "example": "DXB"
+          },
+          "arrivalTime": {
+            "type": "string",
+            "description": "Arrival time (HH:MM)",
+            "example": "12:45"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Total cargo weight in kg",
+            "example": 12500
+          },
+          "volume": {
+            "type": "number",
+            "description": "Cargo volume in m³",
+            "example": 450
+          },
+          "status": {
+            "type": "string",
+            "description": "Flight status",
+            "example": "Scheduled",
+            "enum": [
+              "Scheduled",
+              "Boarding",
+              "In Transit",
+              "Arrived",
+              "Delayed",
+              "Cancelled"
+            ]
+          },
+          "baseRate": {
+            "type": "number",
+            "description": "Standard cargo rate",
+            "example": 3.25
+          },
+          "outputRate": {
+            "type": "number",
+            "description": "Final rate after adjustments",
+            "example": 3.45
+          },
+          "tailNumber": {
+            "type": "string",
+            "description": "Aircraft registration ID",
+            "example": "AP-BHV"
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Aircraft manufacturer",
+            "example": "Boeing"
+          },
+          "aircraftType": {
+            "type": "string",
+            "description": "Aircraft model",
+            "example": "Boeing 777-300ER"
+          },
+          "maxWeight": {
+            "type": "number",
+            "description": "Maximum cargo weight capacity",
+            "example": 160000
+          },
+          "maxVolume": {
+            "type": "number",
+            "description": "Maximum cargo volume capacity",
+            "example": 650
+          }
+        }
+      },
+      "FlightCreate": {
+        "type": "object",
+        "required": [
+          "flight",
+          "date",
+          "origin",
+          "departureTime",
+          "destination",
+          "arrivalTime",
+          "weight",
+          "volume",
+          "status",
+          "baseRate",
+          "aircraftType"
+        ],
+        "properties": {
+          "flight": {
+            "type": "string",
+            "description": "Unique flight ID",
+            "example": "PK202"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Flight date",
+            "example": "2023-05-15"
+          },
+          "origin": {
+            "type": "string",
+            "description": "Departure airport code",
+            "example": "KHI"
+          },
+          "departureTime": {
+            "type": "string",
+            "description": "Departure time (HH:MM)",
+            "example": "10:30"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Arrival airport code",
+            "example": "DXB"
+          },
+          "arrivalTime": {
+            "type": "string",
+            "description": "Arrival time (HH:MM)",
+            "example": "12:45"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Total cargo weight in kg",
+            "example": 12500
+          },
+          "volume": {
+            "type": "number",
+            "description": "Cargo volume in m³",
+            "example": 450
+          },
+          "status": {
+            "type": "string",
+            "description": "Flight status",
+            "example": "Scheduled",
+            "enum": [
+              "Scheduled",
+              "Boarding",
+              "In Transit",
+              "Arrived",
+              "Delayed",
+              "Cancelled"
+            ]
+          },
+          "baseRate": {
+            "type": "number",
+            "description": "Standard cargo rate",
+            "example": 3.25
+          },
+          "tailNumber": {
+            "type": "string",
+            "description": "Aircraft registration ID",
+            "example": "AP-BHV"
+          },
+          "manufacturer": {
+            "type": "string",
+            "description": "Aircraft manufacturer",
+            "example": "Boeing"
+          },
+          "aircraftType": {
+            "type": "string",
+            "description": "Aircraft model",
+            "example": "Boeing 777-300ER"
+          },
+          "maxWeight": {
+            "type": "number",
+            "description": "Maximum cargo weight capacity",
+            "example": 160000
+          },
+          "maxVolume": {
+            "type": "number",
+            "description": "Maximum cargo volume capacity",
+            "example": 650
+          }
+        }
+      },
+      "FlightResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flight"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "AirwayBill": {
+        "type": "object",
+        "required": [
+          "id",
+          "awbNumber",
+          "pieces",
+          "chargedWeight",
+          "commodityCode",
+          "shipper",
+          "natureOfGoods",
+          "shipmentValue",
+          "ratePlan",
+          "productType",
+          "currency",
+          "totalCharges",
+          "activityLog"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the airway bill",
+            "example": 1
+          },
+          "awbNumber": {
+            "type": "string",
+            "description": "Unique airway bill number",
+            "example": "106-10001902"
+          },
+          "pieces": {
+            "type": "integer",
+            "description": "Number of shipment pieces",
+            "example": 15
+          },
+          "chargedWeight": {
+            "type": "number",
+            "description": "Charged weight in kg",
+            "example": 2500
+          },
+          "commodityCode": {
+            "type": "string",
+            "description": "Coded commodity type",
+            "example": "PER"
+          },
+          "specialHandling": {
+            "type": "string",
+            "description": "Special handling code",
+            "example": "ICE"
+          },
+          "shipper": {
+            "type": "string",
+            "description": "Sending party",
+            "example": "Global Logistics Ltd"
+          },
+          "consignee": {
+            "type": "string",
+            "description": "Receiving party",
+            "example": "Tech Innovations Inc"
+          },
+          "consigneeContact": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "contact@techinnovations.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "+1-555-123-4567"
+              },
+              "address": {
+                "type": "string",
+                "example": "123 Business St, City, Country"
+              }
+            }
+          },
+          "natureOfGoods": {
+            "type": "string",
+            "description": "Description of goods",
+            "example": "Electronic components"
+          },
+          "shipmentValue": {
+            "type": "number",
+            "description": "Declared value of shipment",
+            "example": 25000
+          },
+          "valuationCharges": {
+            "type": "number",
+            "description": "Percentage fee based on value",
+            "example": 2.5
+          },
+          "awbCharges": {
+            "type": "number",
+            "description": "Fixed AWB fee",
+            "example": 50
+          },
+          "ratePlan": {
+            "type": "string",
+            "description": "Pricing plan selected",
+            "example": "Standard Rates"
+          },
+          "productType": {
+            "type": "string",
+            "description": "Type of rate",
+            "example": "Base Rate"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Billing currency",
+            "example": "USD"
+          },
+          "totalCharges": {
+            "type": "number",
+            "description": "Total charges",
+            "example": 8750
+          },
+          "attachments": {
+            "type": "array",
+            "description": "URLs to attached documents",
+            "items": {
+              "type": "string"
+            },
+            "example": []
+          },
+          "activityLog": {
+            "type": "array",
+            "description": "Activity history",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2023-05-10T14:30:00Z"
+                },
+                "action": {
+                  "type": "string",
+                  "example": "AWB Created"
+                },
+                "user": {
+                  "type": "string",
+                  "example": "system"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AirwayBillCreate": {
+        "type": "object",
+        "required": [
+          "awbNumber",
+          "pieces",
+          "chargedWeight",
+          "commodityCode",
+          "shipper",
+          "natureOfGoods",
+          "shipmentValue",
+          "ratePlan",
+          "productType",
+          "currency",
+          "totalCharges"
+        ],
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "description": "Unique airway bill number",
+            "example": "106-10001902"
+          },
+          "pieces": {
+            "type": "integer",
+            "description": "Number of shipment pieces",
+            "example": 15
+          },
+          "chargedWeight": {
+            "type": "number",
+            "description": "Charged weight in kg",
+            "example": 2500
+          },
+          "commodityCode": {
+            "type": "string",
+            "description": "Coded commodity type",
+            "example": "PER"
+          },
+          "specialHandling": {
+            "type": "string",
+            "description": "Special handling code",
+            "example": "ICE"
+          },
+          "shipper": {
+            "type": "string",
+            "description": "Sending party",
+            "example": "Global Logistics Ltd"
+          },
+          "consignee": {
+            "type": "string",
+            "description": "Receiving party",
+            "example": "Tech Innovations Inc"
+          },
+          "consigneeContact": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "contact@techinnovations.com"
+              },
+              "phone": {
+                "type": "string",
+                "example": "+1-555-123-4567"
+              },
+              "address": {
+                "type": "string",
+                "example": "123 Business St, City, Country"
+              }
+            }
+          },
+          "natureOfGoods": {
+            "type": "string",
+            "description": "Description of goods",
+            "example": "Electronic components"
+          },
+          "shipmentValue": {
+            "type": "number",
+            "description": "Declared value of shipment",
+            "example": 25000
+          },
+          "valuationCharges": {
+            "type": "number",
+            "description": "Percentage fee based on value",
+            "example": 2.5
+          },
+          "awbCharges": {
+            "type": "number",
+            "description": "Fixed AWB fee",
+            "example": 50
+          },
+          "ratePlan": {
+            "type": "string",
+            "description": "Pricing plan selected",
+            "example": "Standard Rates"
+          },
+          "productType": {
+            "type": "string",
+            "description": "Type of rate",
+            "example": "Base Rate"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Billing currency",
+            "example": "USD"
+          },
+          "totalCharges": {
+            "type": "number",
+            "description": "Total charges",
+            "example": 8750
+          }
+        }
+      },
+      "AirwayBillResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirwayBill"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "object",
+            "properties": {
+              "startDate": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-01-01"
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date",
+                "example": "2023-12-31"
+              }
+            }
+          },
+          "totalRevenue": {
+            "type": "number",
+            "description": "Total revenue for the period",
+            "example": 1250000
+          },
+          "revenuePerKg": {
+            "type": "number",
+            "description": "Average revenue per kg",
+            "example": 3.75
+          },
+          "totalFlights": {
+            "type": "integer",
+            "description": "Total number of flights",
+            "example": 450
+          },
+          "volumeUtilization": {
+            "type": "number",
+            "description": "Average volume utilization percentage",
+            "example": 78.5
+          },
+          "weightUtilization": {
+            "type": "number",
+            "description": "Average weight utilization percentage",
+            "example": 82.3
+          },
+          "avgRevenuePerFlight": {
+            "type": "number",
+            "description": "Average revenue per flight",
+            "example": 2777.78
+          },
+          "avgLoadPerFlight": {
+            "type": "number",
+            "description": "Average load per flight in kg",
+            "example": 12500
+          },
+          "lanePerformance": {
+            "type": "array",
+            "description": "Performance metrics by route",
+            "items": {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "type": "string",
+                  "example": "KHI"
+                },
+                "destination": {
+                  "type": "string",
+                  "example": "DXB"
+                },
+                "flights": {
+                  "type": "integer",
+                  "example": 45
+                },
+                "totalWeight": {
+                  "type": "number",
+                  "example": 562500
+                },
+                "totalVolume": {
+                  "type": "number",
+                  "example": 20250
+                },
+                "totalRevenue": {
+                  "type": "number",
+                  "example": 168750
+                },
+                "avgWeightPerFlight": {
+                  "type": "number",
+                  "example": 12500
+                },
+                "avgVolumePerFlight": {
+                  "type": "number",
+                  "example": 450
+                },
+                "avgRevenuePerFlight": {
+                  "type": "number",
+                  "example": 3750
+                }
+              }
+            }
+          },
+          "bookingLeadTime": {
+            "type": "number",
+            "description": "Average booking lead time in days",
+            "example": 4.5
+          },
+          "flightOnTimePercentage": {
+            "type": "number",
+            "description": "Percentage of flights that departed on time",
+            "example": 87.5
+          },
+          "delayCauses": {
+            "type": "array",
+            "description": "Breakdown of delay causes",
+            "items": {
+              "type": "object",
+              "properties": {
+                "cause": {
+                  "type": "string",
+                  "example": "Weather"
+                },
+                "percentage": {
+                  "type": "number",
+                  "example": 42.3
+                }
+              }
+            }
+          },
+          "topCommodityTypes": {
+            "type": "array",
+            "description": "Most common commodity types",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "example": "PER"
+                },
+                "count": {
+                  "type": "integer",
+                  "example": 245
+                }
+              }
+            }
+          },
+          "topShippers": {
+            "type": "array",
+            "description": "Shippers with highest revenue",
+            "items": {
+              "type": "object",
+              "properties": {
+                "shipper": {
+                  "type": "string",
+                  "example": "Global Logistics Ltd"
+                },
+                "revenue": {
+                  "type": "number",
+                  "example": 325000
+                }
+              }
+            }
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency for financial figures",
+            "example": "USD"
+          }
+        }
       }
     }
   }
