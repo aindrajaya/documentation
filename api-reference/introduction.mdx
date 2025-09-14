@@ -10,7 +10,7 @@ This API provides endpoints to retrieve and create flight information, manage ai
 <Card
   title="Flight Management API Specification"
   icon="plane"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  href="/api-reference/openapi.json"
 >
   View the OpenAPI specification file
 </Card>
@@ -25,13 +25,23 @@ The API can be accessed at:
 ## API Sections
 
 <CardGroup>
-  <Card title="Flights" icon="plane-departure" href="/api-reference/endpoint/flights">
-    Operations for managing flight data
+
+  <Card title="Availability" icon="searchengin" href="/api-reference/availability/create">
+    Search availability and rates
   </Card>
-  <Card title="Airway Bills" icon="file-invoice" href="/api-reference/endpoint/airway-bills">
-    Operations for managing airway bills
+  <Card title="Booking" icon="book-open" href="/api-reference/booking/create">
+    Create and cancel bookings
   </Card>
-  <Card title="Reports" icon="chart-line" href="/api-reference/endpoint/reports">
-    Generate operational reports
+  <Card title="Status" icon="chart-simple" href="/api-reference/status/get">
+    Service health and metadata
+  </Card>
+  <Card title="Flight Schedules" icon="calendar-days" href="/api-reference/flight-schedules/daily">
+    Daily and weekly flight schedules
+  </Card>
+  <Card title="Shipments" icon="truck" href="/api-reference/shipment/fwb-capture">
+    Shipment capture and tracking
+  </Card>
+  <Card title="Stock" icon="boxes-stacked" href="/api-reference/stock/create">
+    Stock availability
   </Card>
 </CardGroup>
