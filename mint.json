@@ -101,6 +101,106 @@
       "pages": [
         "api-reference/stock/create"
       ]
+    },
+    {
+      "group": "AWB Stock",
+      "pages": [
+        "api-reference/awb-stock/create",
+        "api-reference/awb-stock/put"
+      ]
+    },
+    {
+      "group": "Flights",
+      "pages": [
+        "api-reference/flights/create",
+        "api-reference/flights/get"
+      ]
+    },
+    {
+      "group": "Quotes",
+      "pages": [
+        "api-reference/quotes/create"
+      ]
+    },
+    {
+      "group": "Bookings (ACS)",
+      "pages": [
+        "api-reference/bookings/create"
+      ]
+    },
+    {
+      "group": "ASI",
+      "pages": [
+        "api-reference/asi/create"
+      ]
+    },
+    {
+      "group": "Truck Slots",
+      "pages": [
+        "api-reference/truck-slots/create"
+      ]
+    },
+    {
+      "group": "HAWB",
+      "pages": [
+        "api-reference/hawb/create"
+      ]
+    },
+    {
+      "group": "Dangerous Goods",
+      "pages": [
+        "api-reference/dangerous-goods/create"
+      ]
+    },
+    {
+      "group": "Cargo Acceptance",
+      "pages": [
+        "api-reference/cargo-acceptance/create"
+      ]
+    },
+    {
+      "group": "PLACI",
+      "pages": [
+        "api-reference/placi/create",
+        "api-reference/placi/get"
+      ]
+    },
+    {
+      "group": "Flight Manifest",
+      "pages": [
+        "api-reference/flight-manifest/create"
+      ]
+    },
+    {
+      "group": "Status Updates",
+      "pages": [
+        "api-reference/status-updates/create"
+      ]
+    },
+    {
+      "group": "Payments",
+      "pages": [
+        "api-reference/payments/create"
+      ]
+    },
+    {
+      "group": "Digital Pouch",
+      "pages": [
+        "api-reference/digital-pouch/create"
+      ]
+    },
+    {
+      "group": "Tables",
+      "pages": [
+        "api-reference/flight-table/get",
+        "api-reference/airway-bill-table/get"
+      ]
+    },
+    {
+      "group": "Reports",
+      "pages": [
+        "api-reference/report/get"
+      ]
     }
   ],
   "footerSocials": {

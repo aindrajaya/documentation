@@ -1,0 +1,42 @@
+---
+title: 'Get Flight Capacity'
+openapi: 'GET /api/flights/{flightNumber}/capacity'
+---
+
+Get capacity information for a specific flight.
+
+## Path Parameters
+
+<ParamField path="flightNumber" type="string" required>
+  Flight number (e.g., PK-751)
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="date" type="string" format="date">
+  Flight date (YYYY-MM-DD)
+</ParamField>
+
+## Response (200)
+
+<ParamField status="200" type="object">
+  <ParamField name="flightNumber" type="string">
+    Flight number
+  </ParamField>
+  <ParamField name="capacity" type="object">
+    <ParamField name="availablePieces" type="integer">
+      Available cargo pieces
+    </ParamField>
+    <ParamField name="availableWeight" type="number">
+      Available cargo weight (kg)
+    </ParamField>
+  </ParamField>
+</ParamField>
+
+## Response (401)
+
+<ParamField status="401" type="object">
+  <ParamField name="error" type="string">
+    Unauthorized error message
+  </ParamField>
+</ParamField>
