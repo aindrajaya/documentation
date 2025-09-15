@@ -7,40 +7,27 @@ Retrieve flight timetables and leg information.
 
 ## Query Parameters
 
-<ParamField query="page" type="integer" default="1">
-  Page number
+<ParamField query="origin" type="string" required>
+  Origin airport IATA code
 </ParamField>
 
-<ParamField query="limit" type="integer" default="10">
-  Items per page
+<ParamField query="destination" type="string" required>
+  Destination airport IATA code
 </ParamField>
 
-<ParamField query="origin" type="string">
-  Filter by origin airport
+<ParamField query="date" type="string" format="date" required>
+  Flight date
 </ParamField>
 
-<ParamField query="destination" type="string">
-  Filter by destination airport
-</ParamField>
-
-<ParamField query="status" type="string">
-  Filter by flight status
-</ParamField>
-
-<ParamField query="date" type="string" format="date">
-  Filter by flight date
+<ParamField query="airline" type="string">
+  Filter by airline IATA code
 </ParamField>
 
 ## Response (200)
 
-<ParamField status="200" type="FlightsResponse">
-  <ParamField name="flights" type="array">
-    List of flights
-  </ParamField>
-  <ParamField name="pagination" type="Pagination">
-    Pagination information
-  </ParamField>
-</ParamField>
+<ParamField status="200" type="array">
+  <ParamField name="flight_number" type="string">
+    Flight number
   </ParamField>
   <ParamField name="airline" type="string">
     Airline IATA code

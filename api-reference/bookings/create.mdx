@@ -3,11 +3,11 @@ title: 'Create Booking'
 openapi: 'POST /api/bookings'
 ---
 
-Create a new cargo booking.
+Create a new booking with FFR fields and reference to quote.
 
 ## Request Body
 
-<ParamField body="bookingRequest" type="object" required>
+<ParamField body="BookingRequestACS" type="object" required>
   Booking request details
 
   <Expandable title="Booking Request Properties">
@@ -25,7 +25,7 @@ Create a new cargo booking.
 
 ## Response (200)
 
-<ParamField status="200" type="object">
+<ParamField status="200" type="BookingResponseACS">
   <ParamField name="bookingId" type="string">
     Unique booking identifier
   </ParamField>
@@ -39,7 +39,7 @@ Create a new cargo booking.
 
 ## Response (400)
 
-<ParamField status="400" type="object">
+<ParamField status="400" type="ErrorResponse">
   <ParamField name="error" type="string">
     Error message
   </ParamField>
@@ -47,7 +47,11 @@ Create a new cargo booking.
 
 ## Response (401)
 
-<ParamField status="401" type="object">
+<ParamField status="401" type="ErrorResponse">
+  <ParamField name="error" type="string">
+    Unauthorized error
+  </ParamField>
+</ParamField>
   <ParamField name="error" type="string">
     Unauthorized error message
   </ParamField>

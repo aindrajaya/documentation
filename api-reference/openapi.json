@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    },
+    {
       "url": "https://mock-server-hazel-tau.vercel.app",
       "description": "Production server"
     }
@@ -20,66 +24,47 @@
     }
   ],
   "tags": [
-    { "name": "qr-exp-cgo-ext-availability-v1", "description": "Availability service" },
-    { "name": "qr-exp-cgo-ext-booking-v1", "description": "Booking service" },
-    { "name": "qr-exp-cgo-ext-flight-schedules-v1", "description": "Flight schedules service" },
-    { "name": "qr-exp-cgo-shipments-v1", "description": "Shipments service" },
-    { "name": "qr-exp-cgo-stock-v1", "description": "Stock service" },
-    { "name": "qr-exp-cgo-tables-v1", "description": "Table data service" },
-    { "name": "acs-awb-stock-v1", "description": "AWB Stock Management" },
-    { "name": "acs-flight-schedules-v1", "description": "Flight Schedule and Capacity" },
-    { "name": "acs-quotations-v1", "description": "Quotation and Booking" },
-    { "name": "acs-asi-v1", "description": "Advanced Shipment Information" },
-    { "name": "acs-truck-slots-v1", "description": "Truck Slot Management" },
-    { "name": "acs-hawb-v1", "description": "HAWB/MAWB Management" },
-    { "name": "acs-dangerous-goods-v1", "description": "Dangerous Goods Declaration" },
-    { "name": "acs-cargo-acceptance-v1", "description": "Cargo Acceptance" },
-    { "name": "acs-placi-v1", "description": "PLACI Management" },
-    { "name": "acs-flight-manifest-v1", "description": "Flight Manifest" },
-    { "name": "acs-status-updates-v1", "description": "Status Updates" },
-    { "name": "acs-payments-v1", "description": "Payment Gateway" },
-    { "name": "acs-digital-pouch-v1", "description": "Digital Pouch" }
+    { "name": "auth-v1", "description": "Authentication and user management" },
+    { "name": "reference-data-v1", "description": "Reference data and master data" },
+    { "name": "flights-v1", "description": "Flight schedules and capacity" },
+    { "name": "quotes-v1", "description": "Quotation and pricing" },
+    { "name": "awb-stock-v1", "description": "AWB Stock Management" },
+    { "name": "bookings-v1", "description": "Booking management" },
+    { "name": "shipments-v1", "description": "Shipment documents and tracking" },
+    { "name": "compliance-v1", "description": "Compliance and safety declarations" },
+    { "name": "operations-v1", "description": "Operational events and manifests" },
+    { "name": "webhooks-v1", "description": "Webhook management" },
+    { "name": "admin-v1", "description": "Administrative and audit functions" },
+    { "name": "qr-exp-cgo-ext-availability-v1", "description": "Legacy availability service" },
+    { "name": "qr-exp-cgo-ext-booking-v1", "description": "Legacy booking service" },
+    { "name": "qr-exp-cgo-ext-flight-schedules-v1", "description": "Legacy flight schedules service" },
+    { "name": "qr-exp-cgo-shipments-v1", "description": "Legacy shipments service" },
+    { "name": "qr-exp-cgo-stock-v1", "description": "Legacy stock service" },
+    { "name": "qr-exp-cgo-tables-v1", "description": "Legacy table data service" }
   ],
   "paths": {
-    "/api/status": {
-      "get": {
-  "tags": ["qr-exp-cgo-ext-availability-v1"],
-        "summary": "Health check",
-        "responses": {
-          "200": {
-            "description": "Service status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatusResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/availability": {
+    "/api/auth/token": {
       "post": {
-  "tags": ["qr-exp-cgo-ext-availability-v1"],
-        "summary": "Availability and rate search (mock)",
+        "tags": ["auth-v1"],
+        "summary": "Issue OAuth2/JWT access token",
+        "description": "Issue OAuth2 access token using client credentials or password grant",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AvailabilityRequest"
+                "$ref": "#/components/schemas/TokenRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Availability results",
+            "description": "Token issued successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AvailabilityResponse"
+                  "$ref": "#/components/schemas/TokenResponse"
                 }
               }
             }
@@ -95,134 +80,19 @@
         }
       }
     },
-    "/api/booking": {
-      "post": {
-  "tags": ["qr-exp-cgo-ext-booking-v1"],
-        "summary": "Create booking (mock)",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/BookingRequest" }
-            }
-          }
-        },
+    "/api/me": {
+      "get": {
+        "tags": ["auth-v1"],
+        "summary": "Get current user profile",
+        "description": "Get current user/organization profile with roles and scopes",
         "responses": {
           "200": {
-            "description": "Booking created",
+            "description": "User profile",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/BookingResponse" }
-              }
-            }
-          },
-          "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-        }
-      },
-      "delete": {
-  "tags": ["qr-exp-cgo-ext-booking-v1"],
-        "summary": "Cancel booking (mock)",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/CancellationRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Cancellation result",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CancellationResponse" } } }
-          },
-          "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-        }
-      }
-    },
-    "/api/flight-schedules/daily": {
-      "post": {
-  "tags": ["qr-exp-cgo-ext-flight-schedules-v1"],
-        "summary": "Get daily flight schedules",
-        "requestBody": {
-          "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FlightSchedulesDailyRequest" } } }
-        },
-        "responses": {
-          "200": {
-            "description": "Daily schedules",
-            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FlightSchedulesDailyResponse" } } }
-          },
-          "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-        }
-      }
-    },
-    "/api/flight-schedules/weekly": {
-      "post": {
-  "tags": ["qr-exp-cgo-ext-flight-schedules-v1"],
-        "summary": "Get weekly flight schedules",
-        "requestBody": {
-          "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FlightSchedulesWeeklyRequest" } } }
-        },
-        "responses": {
-          "200": { "description": "Weekly routes", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FlightSchedulesWeeklyResponse" } } } },
-          "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-        }
-      }
-    },
-    "/api/shipment/fwb-capture": {
-      "post": {
-  "tags": ["qr-exp-cgo-shipments-v1"],
-        "summary": "FWB capture",
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FwbCaptureRequest" } } } },
-        "responses": { "200": { "description": "FWB capture result", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FwbCaptureResponse" } } } },
-        "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } } }
-      }
-    },
-    "/api/shipment/track": {
-      "post": {
-  "tags": ["qr-exp-cgo-shipments-v1"],
-        "summary": "Track shipment",
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ShipmentTrackRequest" } } } },
-        "responses": { "200": { "description": "Tracking result", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ShipmentTrackResponse" } } } },
-        "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } } }
-      }
-    },
-    "/api/stock": {
-      "post": {
-  "tags": ["qr-exp-cgo-stock-v1"],
-        "summary": "Get next available stock",
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StockRequest" } } } },
-        "responses": { "200": { "description": "Stock response", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StockResponse" } } } },
-        "400": { "description": "Invalid request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }}
-      } 
-    },
-    "/api/awb-stock/request": {
-      "post": {
-        "tags": ["acs-awb-stock-v1"],
-        "summary": "Request AWB Stock",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/AWBStockRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "AWB stock request created",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/AWBStockRequestResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfile"
+                }
               }
             }
           },
@@ -237,149 +107,323 @@
         }
       }
     },
-    "/api/awb-stock/reply/{requestId}": {
-      "put": {
-        "tags": ["acs-awb-stock-v1"],
-        "summary": "Reply to AWB Stock Request",
+    "/api/airlines": {
+      "get": {
+        "tags": ["reference-data-v1"],
+        "summary": "Get airline directory",
+        "description": "Get airline directory with IATA codes, prefixes, and names",
         "parameters": [
           {
-            "name": "requestId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
+            "name": "iataCode",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by IATA code"
+          },
+          {
+            "name": "icaoCode",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by ICAO code"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by airline name"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by country"
+          },
+          {
+            "name": "alliance",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by alliance"
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/AWBStockReply" }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "AWB stock reply processed",
+            "description": "Airline directory",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/AWBStockReplyResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/AirlinesResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/flights/schedule": {
-      "post": {
-        "tags": ["acs-flight-schedules-v1"],
-        "summary": "Submit Flight Schedule",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/FlightScheduleRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Flight schedule submitted",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/FlightScheduleResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/flights/{flightNumber}/capacity": {
+    "/api/airports": {
       "get": {
-        "tags": ["acs-flight-schedules-v1"],
-        "summary": "Get Flight Capacity",
+        "tags": ["reference-data-v1"],
+        "summary": "Get airport directory",
+        "description": "Get airport directory with IATA/ICAO codes, cities, and timezones",
         "parameters": [
           {
-            "name": "flightNumber",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
+            "name": "iataCode",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by IATA code"
+          },
+          {
+            "name": "icaoCode",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by ICAO code"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by city"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Airport directory",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/commodities": {
+      "get": {
+        "tags": ["reference-data-v1"],
+        "summary": "Get commodity catalog",
+        "description": "Get commodity catalog with HS codes and UN numbers for dangerous goods",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by commodity code"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by commodity name"
+          },
+          {
+            "name": "dangerousGoods",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by dangerous goods flag"
+          },
+          {
+            "name": "hsCode",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by HS code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Commodity catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommoditiesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shc": {
+      "get": {
+        "tags": ["reference-data-v1"],
+        "summary": "Get Special Handling Codes",
+        "description": "Get list of Special Handling Codes (SHC) for cargo",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by SHC code"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by SHC name"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by category"
+          },
+          {
+            "name": "requiresApproval",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by approval requirement"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SHC list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SHCResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/flights": {
+      "get": {
+        "tags": ["flights-v1"],
+        "summary": "Get flight timetables",
+        "description": "Get flight timetables and legs with dates and aircraft types",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Items per page"
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by origin airport"
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by destination airport"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by flight status"
           },
           {
             "name": "date",
             "in": "query",
-            "schema": { "type": "string", "format": "date" }
+            "schema": { "type": "string", "format": "date" },
+            "description": "Filter by flight date"
           }
         ],
         "responses": {
           "200": {
-            "description": "Flight capacity information",
+            "description": "Flight timetables",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/FlightCapacityResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/FlightsResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/quotes/request": {
+    "/api/capacity": {
+      "get": {
+        "tags": ["flights-v1"],
+        "summary": "Get flight capacity snapshots",
+        "description": "Get per-flight capacity snapshot with projected/actual kgs and volume",
+        "parameters": [
+          {
+            "name": "flightNumber",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by flight number"
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by origin"
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by destination"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": { "type": "string", "format": "date" },
+            "description": "Filter by date"
+          },
+          {
+            "name": "aircraftType",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by aircraft type"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Capacity snapshots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CapacityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes": {
       "post": {
-        "tags": ["acs-quotations-v1"],
-        "summary": "Request Quote",
+        "tags": ["quotes-v1"],
+        "summary": "Create RFQ",
+        "description": "Create Request for Quote with origin, destination, pieces, weight, dimensions, commodity, and SHC",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/QuoteRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/QuoteRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Quote generated",
+          "201": {
+            "description": "RFQ created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/QuoteResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
               }
             }
           },
@@ -390,12 +434,259 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          }
+        }
+      },
+      "get": {
+        "tags": ["quotes-v1"],
+        "summary": "List quotes",
+        "description": "Get list of quotes with optional filtering",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by status"
           },
-          "401": {
-            "description": "Unauthorized",
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by origin"
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by destination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quotes list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuotesListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes/{id}": {
+      "get": {
+        "tags": ["quotes-v1"],
+        "summary": "Get RFQ details",
+        "description": "Get RFQ details and lifecycle status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Quote ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quote details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Quote not found",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes/{id}/price": {
+      "post": {
+        "tags": ["quotes-v1"],
+        "summary": "Submit airline price options",
+        "description": "Airline submits price options for RFQ",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Quote ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PricingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pricing submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PricingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes/{id}/respond": {
+      "post": {
+        "tags": ["quotes-v1"],
+        "summary": "Submit consignor price proposal",
+        "description": "Consignor submits price proposal using airline quote",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Quote ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteResponseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteResponseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quotes/{id}/decision": {
+      "post": {
+        "tags": ["quotes-v1"],
+        "summary": "Approve/reject quote",
+        "description": "Consignor approves or rejects quote with reason",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Quote ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuoteDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decision recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuoteDecisionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/awb-stock/requests": {
+      "post": {
+        "tags": ["awb-stock-v1"],
+        "summary": "Request AWB stock",
+        "description": "ACA/EPO requests AWB stock allocation from airline",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AWBStockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Stock request submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AWBStockRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/awb-stock/allocations": {
+      "get": {
+        "tags": ["awb-stock-v1"],
+        "summary": "Get AWB stock allocations",
+        "description": "Get airline AWB stock allocations with prefixes, ranges, and validity",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by organization ID"
+          },
+          {
+            "name": "airlinePrefix",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by airline prefix"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stock allocations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AWBStockAllocationsResponse"
+                }
               }
             }
           }
@@ -404,118 +695,150 @@
     },
     "/api/bookings": {
       "post": {
-        "tags": ["acs-quotations-v1"],
-        "summary": "Create Booking",
+        "tags": ["bookings-v1"],
+        "summary": "Create booking",
+        "description": "Create booking with FFR fields and reference to quote",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/BookingRequestACS" }
+              "schema": {
+                "$ref": "#/components/schemas/BookingRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Booking created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/BookingResponseACS" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/asi": {
-      "post": {
-        "tags": ["acs-asi-v1"],
-        "summary": "Send ASI",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/ASISendRequest" }
-            }
+    "/api/bookings/{id}": {
+      "get": {
+        "tags": ["bookings-v1"],
+        "summary": "Get booking details",
+        "description": "Get booking details and status",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Booking ID"
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "ASI sent successfully",
+            "description": "Booking details",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ASISendResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/truck-slots/request": {
+    "/api/bookings/{id}/confirm": {
       "post": {
-        "tags": ["acs-truck-slots-v1"],
-        "summary": "Request Truck Slot",
+        "tags": ["bookings-v1"],
+        "summary": "Confirm/reject/alternate booking",
+        "description": "Airline confirms, rejects, or provides alternative booking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Booking ID"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/TruckSlotRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/BookingConfirmationRequest"
+              }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Truck slot requested",
+            "description": "Confirmation processed",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TruckSlotResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/BookingConfirmationResponse"
+                }
               }
             }
-          },
-          "400": {
-            "description": "Invalid request",
+          }
+        }
+      }
+    },
+    "/api/flights/{id}/bookings": {
+      "get": {
+        "tags": ["bookings-v1"],
+        "summary": "Get flight booking list",
+        "description": "Get flight booking list to share with GHA",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Flight ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flight bookings",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/FlightBookingsResponse"
+                }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized",
+          }
+        }
+      }
+    },
+    "/api/mawb": {
+      "post": {
+        "tags": ["shipments-v1"],
+        "summary": "Create MAWB",
+        "description": "Create and submit MAWB with FWB/XFWB data elements",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MAWBRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MAWB created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/MAWBResponse"
+                }
               }
             }
           }
@@ -524,118 +847,114 @@
     },
     "/api/hawb": {
       "post": {
-        "tags": ["acs-hawb-v1"],
+        "tags": ["shipments-v1"],
         "summary": "Create HAWB",
+        "description": "Create and submit HAWB with FHL/XFZB data",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/HAWBCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/HAWBRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "HAWB created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/HAWBCreateResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/HAWBResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/dangerous-goods": {
+    "/api/documents": {
       "post": {
-        "tags": ["acs-dangerous-goods-v1"],
+        "tags": ["shipments-v1"],
+        "summary": "Upload documents",
+        "description": "Upload ancillary documents (MSDS, COO, COI, etc.) to digital pouch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Document uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dgd": {
+      "post": {
+        "tags": ["compliance-v1"],
         "summary": "Submit e-DGD",
+        "description": "Submit electronic Dangerous Goods Declaration",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DangerousGoodsRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/DGDRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Dangerous goods declaration submitted",
+          "201": {
+            "description": "DGD submitted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/DangerousGoodsResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/DGDResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/cargo-acceptance": {
+    "/api/csd": {
       "post": {
-        "tags": ["acs-cargo-acceptance-v1"],
-        "summary": "Submit Cargo Acceptance",
+        "tags": ["compliance-v1"],
+        "summary": "Submit e-CSD",
+        "description": "Submit electronic Cargo Security Declaration",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CargoAcceptanceRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/CSDRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Cargo acceptance submitted",
+          "201": {
+            "description": "CSD submitted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CargoAcceptanceResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/CSDResponse"
+                }
               }
             }
           }
@@ -644,308 +963,360 @@
     },
     "/api/placi": {
       "post": {
-        "tags": ["acs-placi-v1"],
+        "tags": ["compliance-v1"],
         "summary": "Submit PLACI",
+        "description": "Submit Pre-Loading Advance Cargo Info",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PLACIRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PLACIRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "PLACI submitted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PLACIResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PLACIResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/placi/{placiId}/risk-assessment": {
-      "get": {
-        "tags": ["acs-placi-v1"],
-        "summary": "Get PLACI Risk Assessment",
+    "/api/trucking/transit-manifest": {
+      "post": {
+        "tags": ["operations-v1"],
+        "summary": "Upload transit manifest",
+        "description": "Upload bonded transit manifest to airline/GHA",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitManifestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Manifest uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransitManifestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/terminals/slots": {
+      "post": {
+        "tags": ["operations-v1"],
+        "summary": "Create slot booking",
+        "description": "Create and manage terminal slot bookings with VCT/TSP issuance",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotBookingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Slot booked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SlotBookingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipments/{awb}/events": {
+      "post": {
+        "tags": ["operations-v1"],
+        "summary": "Push shipment events",
+        "description": "Push status events (RCS, MAN, DEP, ARR, etc.) with XFSU equivalents",
         "parameters": [
           {
-            "name": "placiId",
+            "name": "awb",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": { "type": "string" },
+            "description": "AWB number"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShipmentEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentEventResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/flights/{id}/manifests": {
+      "post": {
+        "tags": ["operations-v1"],
+        "summary": "Submit flight manifest",
+        "description": "Submit flight manifest with FFM/XFFM data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Flight ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlightManifestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Manifest submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlightManifestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offloads": {
+      "post": {
+        "tags": ["operations-v1"],
+        "summary": "Report offloads",
+        "description": "Report offloaded or short-shipped pieces",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OffloadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Offload reported",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OffloadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/shipments/{awb}/status": {
+      "get": {
+        "tags": ["operations-v1"],
+        "summary": "Get shipment tracking",
+        "description": "Get end-to-end tracking timeline with events and documents",
+        "parameters": [
+          {
+            "name": "awb",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "AWB number"
           }
         ],
         "responses": {
           "200": {
-            "description": "Risk assessment results",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/PLACIRiskAssessmentResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/flight-manifest": {
-      "post": {
-        "tags": ["acs-flight-manifest-v1"],
-        "summary": "Submit Flight Manifest",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/FlightManifestRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Flight manifest submitted",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/FlightManifestResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/status-updates": {
-      "post": {
-        "tags": ["acs-status-updates-v1"],
-        "summary": "Send Status Update (FSU)",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/StatusUpdateRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Status update sent",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/StatusUpdateResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/payments": {
-      "post": {
-        "tags": ["acs-payments-v1"],
-        "summary": "Process Payment",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/PaymentRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Payment processed",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/PaymentResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/digital-pouch": {
-      "post": {
-        "tags": ["acs-digital-pouch-v1"],
-        "summary": "Create Digital Pouch",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/DigitalPouchRequest" }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Digital pouch created",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/DigitalPouchResponse" }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/flight-table": {
-      "get": {
-        "tags": ["qr-exp-cgo-tables-v1"],
-        "summary": "Get flight table data",
-        "responses": {
-          "200": {
-            "description": "Flight table data",
+            "description": "Tracking timeline",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FlightTableResponse"
+                  "$ref": "#/components/schemas/ShipmentTrackingResponse"
                 }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
         }
       }
     },
-    "/api/airway-bill-table": {
-      "get": {
-        "tags": ["qr-exp-cgo-tables-v1"],
-        "summary": "Get airway bill table data",
+    "/api/webhooks": {
+      "post": {
+        "tags": ["webhooks-v1"],
+        "summary": "Register webhook",
+        "description": "Register endpoints for quotes, booking confirmations, status, and document events",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookRegistrationRequest"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {
-            "description": "Airway bill table data",
+          "201": {
+            "description": "Webhook registered",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AirwayBillTableResponse"
+                  "$ref": "#/components/schemas/WebhookRegistrationResponse"
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized",
+          }
+        }
+      },
+      "get": {
+        "tags": ["webhooks-v1"],
+        "summary": "List webhooks",
+        "description": "Get list of registered webhooks",
+        "responses": {
+          "200": {
+            "description": "Webhooks list",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/WebhooksListResponse"
+                }
               }
             }
           }
         }
       }
     },
-    "/api/report": {
+    "/api/audit-logs": {
       "get": {
-        "tags": ["qr-exp-cgo-tables-v1"],
-        "summary": "Get report data",
+        "tags": ["admin-v1"],
+        "summary": "Get audit logs",
+        "description": "Get authorization, data changes, and message exchange ledger",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by action"
+          },
+          {
+            "name": "resource",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by resource"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by user ID"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Filter from date"
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "Filter to date"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 50 },
+            "description": "Items per page"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Report data",
+            "description": "Audit logs",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReportResponse"
+                  "$ref": "#/components/schemas/AuditLogsResponse"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/usage": {
+      "get": {
+        "tags": ["admin-v1"],
+        "summary": "Get API usage stats",
+        "description": "Get API usage statistics and rate limits per tenant",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "schema": { "type": "string", "default": "current_month" },
+            "description": "Reporting period"
           },
-          "401": {
-            "description": "Unauthorized",
+          {
+            "name": "groupBy",
+            "in": "query",
+            "schema": { "type": "string", "default": "endpoint" },
+            "description": "Group by endpoint or other criteria"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage statistics",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/UsageResponse"
+                }
               }
             }
           }
@@ -958,558 +1329,1601 @@
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "Authorization",
-        "description": "API key authentication. Use 'Bearer <token>' or 'x-api-key' header."
+        "name": "Authorization"
       },
       "ApiKeyHeader": {
         "type": "apiKey",
         "in": "header",
-        "name": "x-api-key",
-        "description": "Alternative API key header."
+        "name": "x-api-key"
       }
     },
     "schemas": {
-      "StatusResponse": {
-        "type": "object",
-        "properties": {
-          "success": { "type": "boolean" },
-          "apiName": { "type": "string" },
-          "version": { "type": "string" },
-          "timestamp": { "type": "string", "format": "date-time" }
-        },
-        "required": ["success", "apiName", "version", "timestamp"]
-      },
-      "AvailabilityRequest": {
-        "type": "object",
-        "properties": {
-          "origin": { "type": "string", "example": "CDG" },
-          "destination": { "type": "string", "example": "BOM" },
-          "routingPreference": {
-            "type": "object",
-            "properties": {
-              "scheduledDepartureDate": { "type": "string", "example": "2025-09-20" }
-            },
-            "required": ["scheduledDepartureDate"]
-          }
-        },
-        "required": ["origin", "destination", "routingPreference"]
-      },
-      "Rate": {
-        "type": "object",
-        "properties": {
-          "currencyCode": { "type": "string" },
-          "ratePerKilo": { "type": "number" },
-          "chargeableWeight": { "type": "number" },
-          "totalAmount": { "type": "number" }
-        },
-        "required": ["currencyCode", "ratePerKilo", "chargeableWeight", "totalAmount"]
-      },
-      "AvailabilityItem": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer" },
-          "carrier": { "type": "string" },
-          "flightNumber": { "type": "string" },
-          "origin": { "type": "string" },
-          "destination": { "type": "string" },
-          "departureDate": { "type": "string", "format": "date" },
-          "availablePieces": { "type": "integer" },
-          "availableWeight": { "type": "integer" },
-          "rate": { "$ref": "#/components/schemas/Rate" }
-        },
-        "required": ["id", "carrier", "flightNumber", "origin", "destination", "departureDate", "rate"]
-      },
-      "AvailabilityResponse": {
-        "type": "object",
-        "properties": {
-          "availabilityResponseSOs": { "type": "array", "items": { "$ref": "#/components/schemas/AvailabilityItem" } },
-          "pagination": {
-            "type": "object",
-            "properties": {
-              "total": { "type": "integer" },
-              "page": { "type": "integer" },
-              "limit": { "type": "integer" }
-            }
-          }
-        }
-      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
-          "error": { "type": "string" }
-        }
-      }
-      ,
-      "BookingRequest": {
-        "type": "object",
-        "properties": {
-          "customerDetails": { "type": "object" },
-          "documentDetails": { "type": "object" },
-          "productCommodityDetails": { "type": "object" },
-          "shipmentDimensions": { "type": "array", "items": { "type": "object" } },
-          "shipmentQuantityDetails": { "type": "object" },
-          "requestRefId": { "type": "string" },
-          "requestType": { "type": "string" },
-          "flightItineraries": { "type": "array", "items": { "type": "object" } },
-          "source": { "type": "string" },
-          "callBackURL": { "type": "string" }
-        },
-        "required": ["customerDetails", "documentDetails", "productCommodityDetails", "shipmentQuantityDetails", "requestRefId", "requestType", "flightItineraries"]
-      },
-      "BookingResponse": {
-        "type": "object",
-        "properties": {
-          "shipmentReferenceNum": { "type": "string" },
-          "currentBookingStatus": { "type": "string" },
-          "bookingCaptured": { "type": "boolean" },
-          "customerDetails": { "type": "object" },
-          "documentDetails": { "type": "object" },
-          "flightItineraries": { "type": "array", "items": { "type": "object" } },
-          "productCommodityDetails": { "type": "object" },
-          "shipmentDimensions": { "type": "array", "items": { "type": "object" } },
-          "shipmentQuantityDetails": { "type": "object" },
-          "source": { "type": "string" },
-          "callBackURL": { "type": "string" },
-          "additionalDetails": { "type": "object" },
-          "rateDetails": { "type": "object" },
-          "businessErrors": { "type": "array", "items": { "type": "object" } },
-          "createdAt": { "type": "string", "format": "date-time" }
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "example": "Error description"
+          }
         }
       },
-      "CancellationRequest": {
+      "TokenRequest": {
         "type": "object",
         "properties": {
-          "shipmentReferenceNum": { "type": "string" },
-          "cancellationReason": { "type": "string" },
-          "customerDetails": { "type": "object" },
-          "documentDetails": { "type": "object" }
+          "grant_type": {
+            "type": "string",
+            "enum": ["client_credentials", "password"],
+            "example": "client_credentials"
+          },
+          "client_id": {
+            "type": "string",
+            "example": "your-client-id"
+          },
+          "client_secret": {
+            "type": "string",
+            "example": "your-client-secret"
+          },
+          "username": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
         }
       },
-      "CancellationResponse": {
+      "TokenResponse": {
         "type": "object",
         "properties": {
-          "documentDetails": { "type": "object" },
-          "cancellationRmks": { "type": "string" },
-          "cancellationStatus": { "type": "string" }
+          "access_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "token_type": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "example": 3600
+          }
         }
       },
-      "FlightSchedulesDailyRequest": {
+      "UserProfile": {
         "type": "object",
         "properties": {
-          "origin": { "type": "string" },
-          "destination": { "type": "string" },
-          "date": { "type": "string", "format": "date" },
-          "filters": { "type": "object" }
-        },
-        "required": ["origin", "destination", "date"]
-      },
-      "FlightSchedulesDailyResponse": {
-        "type": "object",
-        "properties": {
-          "schedules": {
+          "id": {
+            "type": "string",
+            "example": "user-123"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "organization": {
+            "type": "string",
+            "example": "Example Corp"
+          },
+          "roles": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "carrier": { "type": "string" },
-                "flightNumber": { "type": "string" },
-                "origin": { "type": "string" },
-                "destination": { "type": "string" },
-                "departureTime": { "type": "string" },
-                "arrivalTime": { "type": "string" },
-                "capacity": { "type": "object", "properties": { "availablePieces": { "type": "integer" }, "availableWeight": { "type": "number" } } }
-              }
+              "type": "string"
+            },
+            "example": ["consignor", "admin"]
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["read", "write"]
+          }
+        }
+      },
+      "AirlinesResponse": {
+        "type": "object",
+        "properties": {
+          "airlines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Airline"
             }
           }
         }
       },
-      "FlightSchedulesWeeklyRequest": {
+      "Airline": {
         "type": "object",
         "properties": {
-          "origin": { "type": "string" },
-          "destination": { "type": "string" },
-          "weekStartDate": { "type": "string", "format": "date" }
-        },
-        "required": ["origin", "destination", "weekStartDate"]
+          "iataCode": {
+            "type": "string",
+            "example": "QR"
+          },
+          "icaoCode": {
+            "type": "string",
+            "example": "QTR"
+          },
+          "name": {
+            "type": "string",
+            "example": "Qatar Airways"
+          },
+          "country": {
+            "type": "string",
+            "example": "Qatar"
+          },
+          "alliance": {
+            "type": "string",
+            "example": "Oneworld"
+          },
+          "prefix": {
+            "type": "string",
+            "example": "157"
+          }
+        }
       },
-      "FlightSchedulesWeeklyResponse": {
+      "AirportsResponse": {
         "type": "object",
         "properties": {
-          "routes": {
+          "airports": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "carrier": { "type": "string" },
-                "flightNumber": { "type": "string" },
-                "daysOfWeek": { "type": "array", "items": { "type": "string" } },
-                "origin": { "type": "string" },
-                "destination": { "type": "string" }
-              }
+              "$ref": "#/components/schemas/Airport"
             }
           }
         }
       },
-      "FwbCaptureRequest": {
+      "Airport": {
         "type": "object",
         "properties": {
-          "awbPrefix": { "type": "string" },
-          "awbNumber": { "type": "string" },
-          "shipment": { "type": "object" }
-        },
-        "required": ["awbPrefix", "awbNumber"]
-      },
-      "FwbCaptureResponse": {
-        "type": "object",
-        "properties": {
-          "captureStatus": { "type": "string" },
-          "awb": { "type": "string" },
-          "message": { "type": "string" }
+          "iataCode": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "icaoCode": {
+            "type": "string",
+            "example": "OTHH"
+          },
+          "name": {
+            "type": "string",
+            "example": "Hamad International Airport"
+          },
+          "city": {
+            "type": "string",
+            "example": "Doha"
+          },
+          "country": {
+            "type": "string",
+            "example": "Qatar"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Asia/Qatar"
+          }
         }
       },
-      "ShipmentTrackRequest": {
+      "CommoditiesResponse": {
         "type": "object",
         "properties": {
-          "cargoTrackingRequestSOs": { "type": "array", "items": { "type": "object" } }
-        },
-        "required": ["cargoTrackingRequestSOs"]
-      },
-      "ShipmentTrackResponse": {
-        "type": "object",
-        "properties": {
-          "trackingResults": {
+          "commodities": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "awb": { "type": "string" },
-                "status": { "type": "string" },
-                "events": { "type": "array", "items": { "type": "object" } }
-              }
+              "$ref": "#/components/schemas/Commodity"
             }
           }
         }
       },
-      "StockRequest": {
+      "Commodity": {
         "type": "object",
         "properties": {
-          "customerDetails": { "type": "object" },
-          "bookingRequestedCity": { "type": "string" }
-        },
-        "required": ["customerDetails", "bookingRequestedCity"]
+          "code": {
+            "type": "string",
+            "example": "GEN"
+          },
+          "name": {
+            "type": "string",
+            "example": "General Cargo"
+          },
+          "hsCode": {
+            "type": "string",
+            "example": "1234.56"
+          },
+          "dangerousGoods": {
+            "type": "boolean",
+            "example": false
+          },
+          "unNumber": {
+            "type": "string",
+            "example": "UN1234"
+          }
+        }
       },
-      "StockResponse": {
+      "SHCResponse": {
         "type": "object",
         "properties": {
-          "stockAssignments": {
+          "shcCodes": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "nextAvailableCity": { "type": "string" },
-                "flightNumber": { "type": "string" },
-                "availablePieces": { "type": "integer" },
-                "availableWeight": { "type": "number" }
-              }
+              "$ref": "#/components/schemas/SHC"
             }
+          }
+        }
+      },
+      "SHC": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "PER"
+          },
+          "name": {
+            "type": "string",
+            "example": "Perishable"
+          },
+          "category": {
+            "type": "string",
+            "example": "Special Handling"
+          },
+          "requiresApproval": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "FlightsResponse": {
+        "type": "object",
+        "properties": {
+          "flights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Flight"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
           }
         }
       },
       "Flight": {
         "type": "object",
         "properties": {
-          "id": { "type": "integer" },
-          "flight": { "type": "string" },
-          "date": { "type": "string", "format": "date" },
-          "origin": { "type": "string" },
-          "departureTime": { "type": "string" },
-          "destination": { "type": "string" },
-          "arrivalTime": { "type": "string" },
-          "weight": { "type": "number" },
-          "volume": { "type": "number" },
-          "status": { "type": "string" },
-          "baseRate": { "type": "number" },
-          "outputRate": { "type": "number" },
-          "tailNumber": { "type": "string" },
-          "manufacturer": { "type": "string" },
-          "aircraftType": { "type": "string" },
-          "maxWeight": { "type": "number" },
-          "maxVolume": { "type": "number" }
-        },
-        "required": ["id", "flight", "date", "origin", "departureTime", "destination", "arrivalTime", "weight", "volume", "status", "baseRate", "outputRate", "tailNumber", "manufacturer", "aircraftType", "maxWeight", "maxVolume"]
-      },
-      "FlightTableResponse": {
-        "type": "object",
-        "properties": {
-          "flights": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/Flight" }
-          }
-        }
-      },
-      "AirwayBill": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer" },
-          "awbNumber": { "type": "string" },
-          "pieces": { "type": "integer" },
-          "chargedWeight": { "type": "number" },
-          "commodityCode": { "type": "string" },
-          "specialHandling": { "type": "string", "nullable": true },
-          "shipper": { "type": "string" },
-          "consignee": { "type": "string", "nullable": true },
-          "consigneeContact": {
-            "type": "object",
-            "nullable": true,
-            "properties": {
-              "email": { "type": "string" },
-              "phone": { "type": "string" },
-              "address": { "type": "string" }
-            }
-          },
-          "natureOfGoods": { "type": "string" },
-          "shipmentValue": { "type": "number" },
-          "valuationCharges": { "type": "number" },
-          "awbCharges": { "type": "number" },
-          "ratePlan": { "type": "string" },
-          "productType": { "type": "string" },
-          "currency": { "type": "string" },
-          "totalCharges": { "type": "number" },
-          "attachments": { "type": "array", "items": { "type": "object" } },
-          "activityLog": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "timestamp": { "type": "string", "format": "date-time" },
-                "action": { "type": "string" },
-                "user": { "type": "string" }
-              }
-            }
-          }
-        },
-        "required": ["id", "awbNumber", "pieces", "chargedWeight", "commodityCode", "shipper", "natureOfGoods", "shipmentValue", "valuationCharges", "awbCharges", "ratePlan", "productType", "currency", "totalCharges", "attachments", "activityLog"]
-      },
-      "AirwayBillTableResponse": {
-        "type": "object",
-        "properties": {
-          "airwayBills": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/AirwayBill" }
-          }
-        }
-      },
-      "Report": {
-        "type": "object",
-        "properties": {
-          "period": {
-            "type": "object",
-            "properties": {
-              "startDate": { "type": "string", "format": "date" },
-              "endDate": { "type": "string", "format": "date" }
-            }
-          },
-          "totalRevenue": { "type": "number" },
-          "revenuePerKg": { "type": "number" },
-          "totalFlights": { "type": "integer" },
-          "volumeUtilization": { "type": "number" },
-          "weightUtilization": { "type": "number" },
-          "avgRevenuePerFlight": { "type": "number" },
-          "avgLoadPerFlight": { "type": "number" },
-          "lanePerformance": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "origin": { "type": "string" },
-                "destination": { "type": "string" },
-                "flights": { "type": "integer" },
-                "totalWeight": { "type": "number" },
-                "totalVolume": { "type": "number" },
-                "totalRevenue": { "type": "number" },
-                "avgWeightPerFlight": { "type": "number" },
-                "avgVolumePerFlight": { "type": "number" },
-                "avgRevenuePerFlight": { "type": "number" }
-              }
-            }
-          },
-          "bookingLeadTime": { "type": "number" },
-          "flightOnTimePercentage": { "type": "number" },
-          "delayCauses": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "cause": { "type": "string" },
-                "percentage": { "type": "number" }
-              }
-            }
-          },
-          "topCommodityTypes": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "code": { "type": "string" },
-                "count": { "type": "integer" }
-              }
-            }
-          },
-          "topShippers": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "shipper": { "type": "string" },
-                "revenue": { "type": "number" }
-              }
-            }
-          },
-          "currency": { "type": "string" }
-        },
-        "required": ["period", "totalRevenue", "revenuePerKg", "totalFlights", "volumeUtilization", "weightUtilization", "avgRevenuePerFlight", "avgLoadPerFlight", "lanePerformance", "bookingLeadTime", "flightOnTimePercentage", "delayCauses", "topCommodityTypes", "topShippers", "currency"]
-      },
-      "ReportResponse": {
-        "type": "object",
-        "properties": {
-          "report": { "$ref": "#/components/schemas/Report" }
-        }
-      },
-      "BookingRequestACS": {
-        "type": "object",
-        "properties": {
-          "quoteId": {
+          "id": {
             "type": "string",
-            "description": "Reference to the quotation",
-            "example": "QUO-20250115-001"
+            "example": "QR001-20240101"
           },
-          "awbNumber": {
+          "flightNumber": {
             "type": "string",
-            "description": "Air Waybill number",
-            "example": "020-12345001"
+            "example": "QR001"
           },
-          "flightDetails": {
-            "type": "object",
-            "properties": {
-              "flightNumber": {
-                "type": "string",
-                "description": "Flight number",
-                "example": "PK-751"
-              },
-              "date": {
-                "type": "string",
-                "format": "date",
-                "description": "Flight date",
-                "example": "2025-01-20"
-              }
-            },
-            "required": ["flightNumber", "date"]
+          "origin": {
+            "type": "string",
+            "example": "DOH"
           },
-          "validityDuration": {
+          "destination": {
             "type": "string",
-            "description": "Booking validity duration",
-            "example": "48 hours"
-          }
-        },
-        "required": ["quoteId"]
-      },
-      "BookingResponseACS": {
-        "type": "object",
-        "properties": {
-          "bookingId": {
-            "type": "string",
-            "description": "Unique booking identifier",
-            "example": "BKG-20250115-001"
+            "example": "LHR"
           },
-          "awbNumber": {
+          "departureDate": {
             "type": "string",
-            "description": "Air Waybill number",
-            "example": "020-12345001"
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "departureTime": {
+            "type": "string",
+            "example": "08:00"
+          },
+          "arrivalDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "arrivalTime": {
+            "type": "string",
+            "example": "12:00"
+          },
+          "aircraftType": {
+            "type": "string",
+            "example": "B777"
           },
           "status": {
             "type": "string",
-            "description": "Booking status",
-            "enum": ["CONFIRMED", "PENDING", "CANCELLED"],
-            "example": "CONFIRMED"
-          },
-          "flightDetails": {
-            "type": "object",
-            "properties": {
-              "flightNumber": {
-                "type": "string",
-                "description": "Flight number",
-                "example": "PK-751"
-              },
-              "date": {
-                "type": "string",
-                "format": "date",
-                "description": "Flight date",
-                "example": "2025-01-20"
-              },
-              "departureTime": {
-                "type": "string",
-                "format": "date-time",
-                "description": "Departure time",
-                "example": "2025-01-20T10:30:00Z"
-              }
-            },
-            "required": ["flightNumber", "date", "departureTime"]
-          },
-          "shipment": {
-            "type": "object",
-            "properties": {
-              "origin": {
-                "type": "string",
-                "description": "Origin airport code",
-                "example": "KHI"
-              },
-              "destination": {
-                "type": "string",
-                "description": "Destination airport code",
-                "example": "LHR"
-              },
-              "pieces": {
-                "type": "integer",
-                "description": "Number of pieces",
-                "example": 5
-              },
-              "weight": {
-                "type": "number",
-                "description": "Weight in kg",
-                "example": 250.5
-              },
-              "commodity": {
-                "type": "string",
-                "description": "Commodity description",
-                "example": "Electronics"
-              }
-            },
-            "required": ["origin", "destination", "pieces", "weight", "commodity"]
-          },
-          "validUntil": {
+            "enum": ["scheduled", "departed", "arrived", "cancelled"],
+            "example": "scheduled"
+          }
+        }
+      },
+      "CapacityResponse": {
+        "type": "object",
+        "properties": {
+          "capacity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlightCapacity"
+            }
+          }
+        }
+      },
+      "FlightCapacity": {
+        "type": "object",
+        "properties": {
+          "flightId": {
             "type": "string",
-            "format": "date-time",
-            "description": "Booking validity end time",
-            "example": "2025-01-22T10:30:00Z"
+            "example": "QR001-20240101"
+          },
+          "projectedWeight": {
+            "type": "number",
+            "example": 50000
+          },
+          "actualWeight": {
+            "type": "number",
+            "example": 45000
+          },
+          "projectedVolume": {
+            "type": "number",
+            "example": 100
+          },
+          "actualVolume": {
+            "type": "number",
+            "example": 90
+          },
+          "availableWeight": {
+            "type": "number",
+            "example": 5000
+          },
+          "availableVolume": {
+            "type": "number",
+            "example": 10
+          }
+        }
+      },
+      "QuoteRequest": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "destination": {
+            "type": "string",
+            "example": "LHR"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "volume": {
+            "type": "number",
+            "example": 2.5
+          },
+          "commodity": {
+            "type": "string",
+            "example": "GEN"
+          },
+          "shc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["PER"]
+          },
+          "requestedDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-15"
+          }
+        },
+        "required": ["origin", "destination", "pieces", "weight", "commodity"]
+      },
+      "QuoteResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "priced", "accepted", "rejected"],
+            "example": "pending"
+          },
+          "origin": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "destination": {
+            "type": "string",
+            "example": "LHR"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "volume": {
+            "type": "number",
+            "example": 2.5
+          },
+          "commodity": {
+            "type": "string",
+            "example": "GEN"
+          },
+          "shc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["PER"]
           },
           "createdAt": {
             "type": "string",
             "format": "date-time",
-            "description": "Booking creation timestamp",
-            "example": "2025-01-15T17:00:00Z"
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "QuotesListResponse": {
+        "type": "object",
+        "properties": {
+          "quotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "PricingRequest": {
+        "type": "object",
+        "properties": {
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "price": {
+            "type": "number",
+            "example": 1500.00
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-02T10:00:00Z"
+          }
+        },
+        "required": ["flightId", "price", "currency"]
+      },
+      "PricingResponse": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "pricing": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingOption"
+            }
+          }
+        }
+      },
+      "PricingOption": {
+        "type": "object",
+        "properties": {
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "price": {
+            "type": "number",
+            "example": 1500.00
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-02T10:00:00Z"
+          }
+        }
+      },
+      "QuoteResponseRequest": {
+        "type": "object",
+        "properties": {
+          "selectedPricing": {
+            "$ref": "#/components/schemas/PricingOption"
+          },
+          "comments": {
+            "type": "string",
+            "example": "Accepting this pricing option"
+          }
+        },
+        "required": ["selectedPricing"]
+      },
+      "QuoteResponseResponse": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "status": {
+            "type": "string",
+            "example": "priced"
+          },
+          "selectedPricing": {
+            "$ref": "#/components/schemas/PricingOption"
+          }
+        }
+      },
+      "QuoteDecisionRequest": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": ["accept", "reject"],
+            "example": "accept"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Pricing is acceptable"
+          }
+        },
+        "required": ["decision"]
+      },
+      "QuoteDecisionResponse": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "status": {
+            "type": "string",
+            "example": "accepted"
+          },
+          "decision": {
+            "type": "string",
+            "example": "accept"
+          }
+        }
+      },
+      "AWBStockRequest": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "example": "org-123"
+          },
+          "airlinePrefix": {
+            "type": "string",
+            "example": "157"
+          },
+          "requestedStock": {
+            "type": "integer",
+            "example": 100
+          },
+          "validityPeriod": {
+            "type": "integer",
+            "example": 12
+          }
+        },
+        "required": ["organizationId", "airlinePrefix", "requestedStock"]
+      },
+      "AWBStockRequestResponse": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "example": "req-123"
+          },
+          "status": {
+            "type": "string",
+            "example": "pending"
+          }
+        }
+      },
+      "AWBStockAllocationsResponse": {
+        "type": "object",
+        "properties": {
+          "allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AWBStockAllocation"
+            }
+          }
+        }
+      },
+      "AWBStockAllocation": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "example": "org-123"
+          },
+          "airlinePrefix": {
+            "type": "string",
+            "example": "157"
+          },
+          "startNumber": {
+            "type": "string",
+            "example": "157000001"
+          },
+          "endNumber": {
+            "type": "string",
+            "example": "157000100"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "validTo": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-12-31"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "expired", "revoked"],
+            "example": "active"
+          }
+        }
+      },
+      "BookingRequest": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "volume": {
+            "type": "number",
+            "example": 2.5
+          },
+          "commodity": {
+            "type": "string",
+            "example": "GEN"
+          },
+          "shc": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["PER"]
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/Party"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/Party"
+          }
+        },
+        "required": ["quoteId", "flightId", "pieces", "weight", "commodity", "shipper", "consignee"]
+      },
+      "Party": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Example Corp"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St, City, Country"
+          },
+          "contact": {
+            "type": "string",
+            "example": "contact@example.com"
+          }
+        }
+      },
+      "BookingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "booking-123"
           },
           "quoteId": {
             "type": "string",
-            "description": "Reference to the quotation",
-            "example": "QUO-20250115-001"
+            "example": "quote-123"
           },
-          "validityDuration": {
+          "status": {
             "type": "string",
-            "description": "Booking validity duration",
-            "example": "48 hours"
+            "enum": ["pending", "confirmed", "rejected", "cancelled"],
+            "example": "pending"
+          },
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "BookingConfirmationRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["confirm", "reject", "alternate"],
+            "example": "confirm"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Capacity available"
+          },
+          "alternateFlightId": {
+            "type": "string",
+            "example": "QR003-20240101"
           }
         },
-        "required": ["bookingId", "awbNumber", "status", "flightDetails", "shipment", "validUntil", "createdAt"]
+        "required": ["action"]
+      },
+      "BookingConfirmationResponse": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "example": "booking-123"
+          },
+          "status": {
+            "type": "string",
+            "example": "confirmed"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          }
+        }
+      },
+      "FlightBookingsResponse": {
+        "type": "object",
+        "properties": {
+          "bookings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingSummary"
+            }
+          }
+        }
+      },
+      "BookingSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "booking-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "shipper": {
+            "type": "string",
+            "example": "Example Corp"
+          },
+          "consignee": {
+            "type": "string",
+            "example": "Recipient Corp"
+          }
+        }
+      },
+      "MAWBRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "origin": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "destination": {
+            "type": "string",
+            "example": "LHR"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "volume": {
+            "type": "number",
+            "example": 2.5
+          },
+          "commodity": {
+            "type": "string",
+            "example": "GEN"
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/Party"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/Party"
+          }
+        },
+        "required": ["awbNumber", "origin", "destination", "pieces", "weight", "commodity", "shipper", "consignee"]
+      },
+      "MAWBResponse": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "created"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "HAWBRequest": {
+        "type": "object",
+        "properties": {
+          "hawbNumber": {
+            "type": "string",
+            "example": "H001"
+          },
+          "mawbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 5
+          },
+          "weight": {
+            "type": "number",
+            "example": 250
+          },
+          "shipper": {
+            "$ref": "#/components/schemas/Party"
+          },
+          "consignee": {
+            "$ref": "#/components/schemas/Party"
+          }
+        },
+        "required": ["hawbNumber", "mawbNumber", "pieces", "weight", "shipper", "consignee"]
+      },
+      "HAWBResponse": {
+        "type": "object",
+        "properties": {
+          "hawbNumber": {
+            "type": "string",
+            "example": "H001"
+          },
+          "mawbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "created"
+          }
+        }
+      },
+      "DocumentUploadRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "documentType": {
+            "type": "string",
+            "enum": ["MSDS", "COO", "COI", "Insurance"],
+            "example": "MSDS"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "Document file"
+          }
+        },
+        "required": ["awbNumber", "documentType", "file"]
+      },
+      "DocumentUploadResponse": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "example": "doc-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "documentType": {
+            "type": "string",
+            "example": "MSDS"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "DGDRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "unNumber": {
+            "type": "string",
+            "example": "UN1234"
+          },
+          "properShippingName": {
+            "type": "string",
+            "example": "Example Dangerous Goods"
+          },
+          "class": {
+            "type": "string",
+            "example": "3"
+          },
+          "packingGroup": {
+            "type": "string",
+            "example": "II"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 100
+          },
+          "netWeight": {
+            "type": "number",
+            "example": 50
+          }
+        },
+        "required": ["awbNumber", "unNumber", "properShippingName", "class", "quantity"]
+      },
+      "DGDResponse": {
+        "type": "object",
+        "properties": {
+          "dgdId": {
+            "type": "string",
+            "example": "dgd-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "submitted"
+          }
+        }
+      },
+      "CSDRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "screeningMethod": {
+            "type": "string",
+            "enum": ["EDS", "X-ray", "Physical"],
+            "example": "EDS"
+          },
+          "screeningDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T08:00:00Z"
+          },
+          "screeningResult": {
+            "type": "string",
+            "enum": ["cleared", "flagged"],
+            "example": "cleared"
+          }
+        },
+        "required": ["awbNumber", "screeningMethod", "screeningDate", "screeningResult"]
+      },
+      "CSDResponse": {
+        "type": "object",
+        "properties": {
+          "csdId": {
+            "type": "string",
+            "example": "csd-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "submitted"
+          }
+        }
+      },
+      "PLACIRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "origin": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "destination": {
+            "type": "string",
+            "example": "LHR"
+          },
+          "departureDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "cargoDescription": {
+            "type": "string",
+            "example": "General cargo"
+          },
+          "shipperName": {
+            "type": "string",
+            "example": "Example Shipper"
+          },
+          "consigneeName": {
+            "type": "string",
+            "example": "Example Consignee"
+          }
+        },
+        "required": ["awbNumber", "origin", "destination", "departureDate", "cargoDescription", "shipperName", "consigneeName"]
+      },
+      "PLACIResponse": {
+        "type": "object",
+        "properties": {
+          "placiId": {
+            "type": "string",
+            "example": "placi-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "submitted"
+          }
+        }
+      },
+      "TransitManifestRequest": {
+        "type": "object",
+        "properties": {
+          "manifestNumber": {
+            "type": "string",
+            "example": "TM001"
+          },
+          "awbNumbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["15712345678", "15712345679"]
+          },
+          "origin": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "destination": {
+            "type": "string",
+            "example": "LHR"
+          },
+          "transportMode": {
+            "type": "string",
+            "enum": ["truck", "rail", "sea"],
+            "example": "truck"
+          }
+        },
+        "required": ["manifestNumber", "awbNumbers", "origin", "destination", "transportMode"]
+      },
+      "TransitManifestResponse": {
+        "type": "object",
+        "properties": {
+          "manifestId": {
+            "type": "string",
+            "example": "manifest-123"
+          },
+          "status": {
+            "type": "string",
+            "example": "uploaded"
+          }
+        }
+      },
+      "SlotBookingRequest": {
+        "type": "object",
+        "properties": {
+          "terminal": {
+            "type": "string",
+            "example": "DOH Cargo Terminal"
+          },
+          "requestedDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "requestedTime": {
+            "type": "string",
+            "example": "08:00"
+          },
+          "duration": {
+            "type": "integer",
+            "example": 2
+          },
+          "awbNumbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["15712345678"]
+          }
+        },
+        "required": ["terminal", "requestedDate", "requestedTime", "duration", "awbNumbers"]
+      },
+      "SlotBookingResponse": {
+        "type": "object",
+        "properties": {
+          "slotId": {
+            "type": "string",
+            "example": "slot-123"
+          },
+          "terminal": {
+            "type": "string",
+            "example": "DOH Cargo Terminal"
+          },
+          "confirmedDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-01"
+          },
+          "confirmedTime": {
+            "type": "string",
+            "example": "08:00"
+          },
+          "vctNumber": {
+            "type": "string",
+            "example": "VCT001"
+          }
+        }
+      },
+      "ShipmentEventRequest": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": ["RCS", "MAN", "DEP", "ARR", "RCF", "NFD", "DLV"],
+            "example": "RCS"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T08:00:00Z"
+          },
+          "location": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 10
+          },
+          "weight": {
+            "type": "number",
+            "example": 500
+          },
+          "notes": {
+            "type": "string",
+            "example": "Cargo received at origin"
+          }
+        },
+        "required": ["eventType", "eventDate", "location"]
+      },
+      "ShipmentEventResponse": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "example": "event-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "RCS"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T08:00:00Z"
+          }
+        }
+      },
+      "FlightManifestRequest": {
+        "type": "object",
+        "properties": {
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "awbNumbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["15712345678", "15712345679"]
+          },
+          "totalPieces": {
+            "type": "integer",
+            "example": 20
+          },
+          "totalWeight": {
+            "type": "number",
+            "example": 1000
+          },
+          "totalVolume": {
+            "type": "number",
+            "example": 15
+          }
+        },
+        "required": ["flightId", "awbNumbers", "totalPieces", "totalWeight"]
+      },
+      "FlightManifestResponse": {
+        "type": "object",
+        "properties": {
+          "manifestId": {
+            "type": "string",
+            "example": "manifest-123"
+          },
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "status": {
+            "type": "string",
+            "example": "submitted"
+          }
+        }
+      },
+      "OffloadRequest": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "flightId": {
+            "type": "string",
+            "example": "QR001-20240101"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["capacity", "documentation", "security", "other"],
+            "example": "capacity"
+          },
+          "pieces": {
+            "type": "integer",
+            "example": 2
+          },
+          "weight": {
+            "type": "number",
+            "example": 100
+          },
+          "notes": {
+            "type": "string",
+            "example": "Insufficient capacity on flight"
+          }
+        },
+        "required": ["awbNumber", "flightId", "reason"]
+      },
+      "OffloadResponse": {
+        "type": "object",
+        "properties": {
+          "offloadId": {
+            "type": "string",
+            "example": "offload-123"
+          },
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "status": {
+            "type": "string",
+            "example": "reported"
+          }
+        }
+      },
+      "ShipmentTrackingResponse": {
+        "type": "object",
+        "properties": {
+          "awbNumber": {
+            "type": "string",
+            "example": "15712345678"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShipmentEvent"
+            }
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            }
+          }
+        }
+      },
+      "ShipmentEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "example": "RCS"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T08:00:00Z"
+          },
+          "location": {
+            "type": "string",
+            "example": "DOH"
+          },
+          "description": {
+            "type": "string",
+            "example": "Cargo received at origin"
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "doc-123"
+          },
+          "type": {
+            "type": "string",
+            "example": "MSDS"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "WebhookRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://api.example.com/webhooks"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["quote.created", "quote.priced", "booking.confirmed", "shipment.status", "document.uploaded"]
+            },
+            "example": ["quote.created", "booking.confirmed"]
+          },
+          "secret": {
+            "type": "string",
+            "example": "webhook-secret-123"
+          }
+        },
+        "required": ["url", "events"]
+      },
+      "WebhookRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "webhookId": {
+            "type": "string",
+            "example": "webhook-123"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://api.example.com/webhooks"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["quote.created", "booking.confirmed"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          }
+        }
+      },
+      "WebhooksListResponse": {
+        "type": "object",
+        "properties": {
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookRegistrationResponse"
+            }
+          }
+        }
+      },
+      "AuditLogsResponse": {
+        "type": "object",
+        "properties": {
+          "logs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLog"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "AuditLog": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "log-123"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-01T10:00:00Z"
+          },
+          "action": {
+            "type": "string",
+            "example": "CREATE"
+          },
+          "resource": {
+            "type": "string",
+            "example": "quote"
+          },
+          "resourceId": {
+            "type": "string",
+            "example": "quote-123"
+          },
+          "userId": {
+            "type": "string",
+            "example": "user-123"
+          },
+          "ipAddress": {
+            "type": "string",
+            "example": "192.168.1.1"
+          },
+          "details": {
+            "type": "object",
+            "example": {"field": "status", "oldValue": "pending", "newValue": "confirmed"}
+          }
+        }
+      },
+      "UsageResponse": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "example": "current_month"
+          },
+          "totalRequests": {
+            "type": "integer",
+            "example": 15000
+          },
+          "requestsByEndpoint": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "/api/quotes": 500,
+              "/api/bookings": 300
+            }
+          },
+          "rateLimits": {
+            "type": "object",
+            "properties": {
+              "requestsPerMinute": {
+                "type": "integer",
+                "example": 60
+              },
+              "requestsPerHour": {
+                "type": "integer",
+                "example": 1000
+              },
+              "requestsPerDay": {
+                "type": "integer",
+                "example": 10000
+              }
+            }
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 10
+          },
+          "total": {
+            "type": "integer",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 10
+          }
+        }
       }
     }
   }

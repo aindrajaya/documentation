@@ -50,156 +50,75 @@
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Auth & Bootstrap",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "api-reference/auth/token",
+        "api-reference/me/get"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Reference & Master Data",
       "pages": [
-        "api-reference/introduction"
+        "api-reference/airlines/get",
+        "api-reference/airports/get",
+        "api-reference/commodities/get",
+        "api-reference/shc/get"
       ]
     },
     {
-      "group": "Availability",
+      "group": "Schedules & Capacity",
       "pages": [
-        "api-reference/availability/create"
-      ]
-    },
-    {
-      "group": "Booking",
-      "pages": [
-        "api-reference/booking/create",
-        "api-reference/booking/delete"
-      ]
-    },
-    {
-      "group": "Service",
-      "pages": [
-        "api-reference/status/get"
-      ]
-    },
-    {
-      "group": "Flight Schedules",
-      "pages": [
-        "api-reference/flight-schedules/daily",
-        "api-reference/flight-schedules/weekly"
-      ]
-    },
-    {
-      "group": "Shipments",
-      "pages": [
-        "api-reference/shipment/fwb-capture",
-        "api-reference/shipment/track"
-      ]
-    },
-    {
-      "group": "Stock",
-      "pages": [
-        "api-reference/stock/create"
-      ]
-    },
-    {
-      "group": "AWB Stock",
-      "pages": [
-        "api-reference/awb-stock/create",
-        "api-reference/awb-stock/put"
-      ]
-    },
-    {
-      "group": "Flights",
-      "pages": [
-        "api-reference/flights/create",
-        "api-reference/flights/get"
+        "api-reference/flights/get",
+        "api-reference/capacity/get"
       ]
     },
     {
       "group": "Quotes",
       "pages": [
-        "api-reference/quotes/create"
+        "api-reference/quotes/create",
+        "api-reference/quotes/get",
+        "api-reference/quotes/price/create",
+        "api-reference/quotes/respond/create",
+        "api-reference/quotes/decision/create"
       ]
     },
     {
-      "group": "Bookings (ACS)",
+      "group": "AWB Stock Management",
       "pages": [
-        "api-reference/bookings/create"
+        "api-reference/awb-stock/create",
+        "api-reference/awb-stock/put",
+        "api-reference/awb-stock/allocations/get"
       ]
     },
     {
-      "group": "ASI",
+      "group": "Bookings",
       "pages": [
-        "api-reference/asi/create"
+        "api-reference/bookings/create",
+        "api-reference/bookings/get",
+        "api-reference/bookings/confirm/create",
+        "api-reference/flights/bookings/get"
       ]
     },
     {
-      "group": "Truck Slots",
+      "group": "Shipment Documents",
       "pages": [
-        "api-reference/truck-slots/create"
+        "api-reference/mawb/create",
+        "api-reference/hawb/create",
+        "api-reference/documents/create"
       ]
     },
     {
-      "group": "HAWB",
+      "group": "Compliance & Safety",
       "pages": [
-        "api-reference/hawb/create"
+        "api-reference/dangerous-goods/create",
+        "api-reference/placi/create"
       ]
     },
     {
-      "group": "Dangerous Goods",
+      "group": "Tracking",
       "pages": [
-        "api-reference/dangerous-goods/create"
-      ]
-    },
-    {
-      "group": "Cargo Acceptance",
-      "pages": [
-        "api-reference/cargo-acceptance/create"
-      ]
-    },
-    {
-      "group": "PLACI",
-      "pages": [
-        "api-reference/placi/create",
-        "api-reference/placi/get"
-      ]
-    },
-    {
-      "group": "Flight Manifest",
-      "pages": [
-        "api-reference/flight-manifest/create"
-      ]
-    },
-    {
-      "group": "Status Updates",
-      "pages": [
-        "api-reference/status-updates/create"
-      ]
-    },
-    {
-      "group": "Payments",
-      "pages": [
-        "api-reference/payments/create"
-      ]
-    },
-    {
-      "group": "Digital Pouch",
-      "pages": [
-        "api-reference/digital-pouch/create"
-      ]
-    },
-    {
-      "group": "Tables",
-      "pages": [
-        "api-reference/flight-table/get",
-        "api-reference/airway-bill-table/get"
-      ]
-    },
-    {
-      "group": "Reports",
-      "pages": [
-        "api-reference/report/get"
+        "api-reference/shipments/status/get",
+        "api-reference/shipments/events/create"
       ]
     }
   ],

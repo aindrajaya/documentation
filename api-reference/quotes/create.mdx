@@ -1,57 +1,50 @@
 ---
-title: 'Request Quote'
-openapi: 'POST /api/quotes/request'
+title: 'Create RFQ'
+openapi: 'POST /api/quotes'
 ---
 
-Request a quote for cargo transportation.
+Create a Request for Quote (RFQ) for cargo transportation.
 
 ## Request Body
 
-<ParamField body="quoteRequest" type="object" required>
-  Quote request details
+<ParamField body="origin" type="string" required>
+  Origin airport IATA code
+</ParamField>
 
-  <Expandable title="Quote Request Properties">
-    <ParamField body="origin" type="string" required>
-      Origin airport code
-    </ParamField>
-    <ParamField body="destination" type="string" required>
-      Destination airport code
-    </ParamField>
-    <ParamField body="weight" type="number" required>
-      Cargo weight (kg)
-    </ParamField>
-    <ParamField body="pieces" type="integer" required>
-      Number of cargo pieces
-    </ParamField>
-  </Expandable>
+<ParamField body="destination" type="string" required>
+  Destination airport IATA code
+</ParamField>
+
+<ParamField body="pieces" type="integer" required>
+  Number of cargo pieces
+</ParamField>
+
+<ParamField body="weight" type="number" required>
+  Total weight (kg)
+</ParamField>
+
+<ParamField body="dimensions" type="object">
+  Cargo dimensions
+</ParamField>
+
+<ParamField body="commodity" type="string" required>
+  Commodity type
+</ParamField>
+
+<ParamField body="shc" type="array">
+  Special handling codes
 </ParamField>
 
 ## Response (200)
 
 <ParamField status="200" type="object">
-  <ParamField name="quoteId" type="string">
+  <ParamField name="quote_id" type="string">
     Unique quote identifier
   </ParamField>
-  <ParamField name="totalAmount" type="number">
-    Quoted amount
+  <ParamField name="status" type="string">
+    Quote status
   </ParamField>
-  <ParamField name="currency" type="string">
-    Currency code
-  </ParamField>
-</ParamField>
-
-## Response (400)
-
-<ParamField status="400" type="object">
-  <ParamField name="error" type="string">
-    Error message
-  </ParamField>
-</ParamField>
-
-## Response (401)
-
-<ParamField status="401" type="object">
-  <ParamField name="error" type="string">
-    Unauthorized error message
+  <ParamField name="created_at" type="string" format="date-time">
+    Creation timestamp
   </ParamField>
 </ParamField>
