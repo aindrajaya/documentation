@@ -111,7 +111,8 @@
       "group": "Compliance & Safety",
       "pages": [
         "api-reference/dangerous-goods/create",
-        "api-reference/placi/create"
+        "api-reference/placi/create",
+        "api-reference/csd/create"
       ]
     },
     {
@@ -119,6 +120,34 @@
       "pages": [
         "api-reference/shipments/status/get",
         "api-reference/shipments/events/create"
+      ]
+    },
+    {
+      "group": "Bonded Trucking & Slots",
+      "pages": [
+        "api-reference/trucking/transit-manifest/create",
+        "api-reference/terminals/slots/create"
+      ]
+    },
+    {
+      "group": "Operational Events & Manifests",
+      "pages": [
+        "api-reference/shipments/events/create",
+        "api-reference/flights/manifests/create",
+        "api-reference/offloads/create"
+      ]
+    },
+    {
+      "group": "Webhooks",
+      "pages": [
+        "api-reference/webhooks/create"
+      ]
+    },
+    {
+      "group": "Admin & Audit",
+      "pages": [
+        "api-reference/audit-logs/get",
+        "api-reference/usage/get"
       ]
     }
   ],
